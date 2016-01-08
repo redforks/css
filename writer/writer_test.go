@@ -2,11 +2,11 @@ package writer
 
 import (
 	"bytes"
-	"spork/testing/iotest"
 
 	"github.com/golang/mock/gomock"
 	"github.com/gorilla/css/scanner"
 	bdd "github.com/onsi/ginkgo"
+	"github.com/redforks/testing/iotest"
 	"github.com/stretchr/testify/assert"
 )
 
