@@ -239,4 +239,21 @@ var _ = bdd.Describe("Writer", func() {
 		assert.Error(t(), w.Close(), iotest.ErrWriter.Error())
 	})
 
+	bdd.It("Dumps", func() {
+		css := `
+		// comment
+		.foo {
+			color: white;
+		}
+		`
+		s := scanner.New(css)
+		var tokens []*scanner.Token
+		for to := s.Next(); to.Type != scanner.TokenEOF; to = s.Next() {
+			tokens = append(tokens, to)
+		}
+		act, err := Dumps(tokens)
+		assert.NoError(t(), err)
+		assert.Equal(t(), css, act)
+	})
+
 })

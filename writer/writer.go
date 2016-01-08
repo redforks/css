@@ -1,6 +1,7 @@
 package writer
 
 import (
+	"bytes"
 	"io"
 
 	"github.com/gorilla/css/scanner"
@@ -36,4 +37,18 @@ func (w *Writer) Close() error {
 		return closer.Close()
 	}
 	return w.e
+}
+
+// Dump token slice to string
+func Dumps(tokens []*scanner.Token) (string, error) {
+	buf := bytes.Buffer{}
+	w := New(&buf)
+	for _, tk := range tokens {
+		w.Write(tk)
+	}
+	err := w.Close()
+	if err != nil {
+		return "", err
+	}
+	return string(buf.Bytes()), nil
 }
