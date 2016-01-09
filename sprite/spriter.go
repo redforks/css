@@ -1,7 +1,6 @@
 package sprite
 
 import (
-	"errors"
 	"fmt"
 	"image"
 	"image/draw"
@@ -11,6 +10,7 @@ import (
 
 	"github.com/gorilla/css/scanner"
 	"github.com/redforks/css/writer"
+	"github.com/redforks/errors"
 )
 
 // Service provide/isolate I/O interface of Spriter.
@@ -105,6 +105,7 @@ func (s *Spriter) Gen() (css string, err error) {
 		}
 		defer closeClosable(f)
 		if err = png.Encode(f, sprite); err != nil {
+			err = errors.NewRuntime(err)
 			return
 		}
 	}
@@ -144,7 +145,7 @@ func scan(css string) ([]*scanner.Token, error) {
 		case scanner.TokenEOF:
 			return tks, nil
 		case scanner.TokenError:
-			return nil, errors.New(tk.Value)
+			return nil, errors.Input(tk.Value)
 		default:
 			tks = append(tks, tk)
 		}
@@ -227,17 +228,20 @@ func (s *Spriter) parseImage(imgFile string) (*stamp, error) {
 	}
 
 	if f, err := s.sv.OpenImage(imgFile); err != nil {
-		return nil, err
+		return nil, errors.NewInput(err)
 	} else {
 		defer closeClosable(f)
 
 		img, _, err := image.Decode(f)
+		if err != nil {
+			return nil, errors.NewInput(err)
+		}
 		st := &stamp{
 			imgFile,
 			img,
 			image.Pt(-1, -1),
 		}
 		s.loadedImages[imgFile] = st
-		return st, err
+		return st, nil
 	}
 }
