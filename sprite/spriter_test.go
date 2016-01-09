@@ -38,7 +38,7 @@ var _ = bdd.Describe("sprite", func() {
 		assert.NoError(t(), err)
 		assert.Equal(t(), `
 	.foo { background: url(g1.png) no-repeat; }
-	.bar { background: url(g1.png) no-repeat; }
+	.bar { background: url(g1.png) no-repeat -16px 0; }
 		`, out)
 		ts.assertSprite("g1.png", 32, 16)
 	})
@@ -58,6 +58,8 @@ var _ = bdd.Describe("sprite", func() {
 	bdd.XIt("url('img')")
 
 	bdd.XIt("url() not after background")
+
+	bdd.XIt("background has more info than url()")
 
 })
 
