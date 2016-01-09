@@ -37,6 +37,8 @@ type Service interface {
 type Spriter struct {
 	css string
 	sv  Service
+
+	loadedImages map[string]*stamp
 }
 
 // Create Spriter.
@@ -44,8 +46,9 @@ type Spriter struct {
 //  css: css file content
 func New(css string, service Service) *Spriter {
 	return &Spriter{
-		css: css,
-		sv:  service,
+		css:          css,
+		sv:           service,
+		loadedImages: make(map[string]*stamp),
 	}
 }
 
@@ -65,7 +68,7 @@ func (s *Spriter) Gen() (css string, err error) {
 	}
 
 	needTranslate := false
-	groups := make(map[string][]*stamp)
+	groups := make(map[string][]*cssImage)
 	for _, tk := range tks {
 		switch tk.Type {
 		case scanner.TokenIdent:
@@ -73,10 +76,10 @@ func (s *Spriter) Gen() (css string, err error) {
 		case scanner.TokenURI:
 			if needTranslate {
 				var (
-					st *stamp
+					st *cssImage
 					g  string
 				)
-				if st, g, err = parseStamp(s.sv, tk); err != nil {
+				if st, g, err = s.parseCssImage(tk); err != nil {
 					return
 				}
 
@@ -91,14 +94,14 @@ func (s *Spriter) Gen() (css string, err error) {
 		size := getSpriteSize(sts)
 		var sprite = image.NewRGBA(image.Rectangle{Min: image.Point{}, Max: size})
 		p := image.Pt(0, 0)
-		for i, st := range sts {
+		for _, st := range sts {
 			st.tk.Value = "url(" + g + ".png) no-repeat"
-			if i != 0 {
-				st.tk.Value += fmt.Sprintf(" -%dpx 0", p.X)
+			if st.img.sp.X != 0 {
+				st.tk.Value += fmt.Sprintf(" %dpx 0", st.img.sp.X)
 			}
-			b := st.bounds()
-			draw.Draw(sprite, b.Add(p), st.img, b.Min, draw.Src)
-			p.X += st.dx()
+			b := st.img.bounds()
+			draw.Draw(sprite, b.Add(p), st.img.img, b.Min, draw.Src)
+			p.X += st.img.dx()
 		}
 
 		var f io.Writer
@@ -115,12 +118,16 @@ func (s *Spriter) Gen() (css string, err error) {
 	return writer.Dumps(tks)
 }
 
-func getSpriteSize(imgs []*stamp) image.Point {
+func getSpriteSize(imgs []*cssImage) image.Point {
 	p := image.Point{}
 	for _, img := range imgs {
-		p.X += img.dx()
-		if p.Y < img.dy() {
-			p.Y = img.dy()
+		st := img.img
+		if st.sp.X == -1 {
+			st.sp = image.Pt(-p.X, 0)
+			p.X += st.dx()
+			if p.Y < st.dy() {
+				p.Y = st.dy()
+			}
 		}
 	}
 	return p
@@ -165,11 +172,17 @@ func extractGroup(file string) (group string) {
 	return words[0]
 }
 
+// Represent a css image style
+type cssImage struct {
+	tk  *scanner.Token
+	img *stamp
+}
+
 // Represent a image inside sprite
 type stamp struct {
-	tk       *scanner.Token
 	filename string // Filename of the image
 	img      image.Image
+	sp       image.Point // Start position in sprite
 }
 
 func (st *stamp) bounds() image.Rectangle {
@@ -186,7 +199,7 @@ func (st *stamp) dy() int {
 
 // Parse stamp from a image url css token. stamp is nil if the url need
 // ignored: not png, not expected filename format.
-func parseStamp(sv Service, tk *scanner.Token) (stmp *stamp, groupName string, err error) {
+func (s *Spriter) parseCssImage(tk *scanner.Token) (cssImg *cssImage, groupName string, err error) {
 	var fn string
 	if fn, err = extractUriFile(tk.Value); err != nil {
 		return
@@ -197,19 +210,35 @@ func parseStamp(sv Service, tk *scanner.Token) (stmp *stamp, groupName string, e
 		return
 	}
 
-	var f io.Reader
-	if f, err = sv.OpenImage(fn); err != nil {
-		return
-	}
-	defer closeClosable(f)
-
-	var img image.Image
-	if img, _, err = image.Decode(f); err != nil {
+	var st *stamp
+	if st, err = s.parseImage(fn); err != nil {
 		return
 	}
 
-	stmp = &stamp{
-		tk, fn, img,
+	cssImg = &cssImage{
+		tk,
+		st,
 	}
 	return
+}
+
+func (s *Spriter) parseImage(imgFile string) (*stamp, error) {
+	if img, ok := s.loadedImages[imgFile]; ok {
+		return img, nil
+	}
+
+	if f, err := s.sv.OpenImage(imgFile); err != nil {
+		return nil, err
+	} else {
+		defer closeClosable(f)
+
+		img, _, err := image.Decode(f)
+		st := &stamp{
+			imgFile,
+			img,
+			image.Pt(-1, -1),
+		}
+		s.loadedImages[imgFile] = st
+		return st, err
+	}
 }
