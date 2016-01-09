@@ -43,7 +43,7 @@ var _ = bdd.Describe("sprite", func() {
 		ts.assertSprite("g1.png", 32, 16)
 	})
 
-	bdd.XIt("Group has one file", func() {
+	bdd.It("Group has one file", func() {
 		ts := newTestService(map[string]string{
 			"g1.t1.png": "t1.png",
 			"g1.t2.png": "t2.png",
@@ -81,21 +81,120 @@ var _ = bdd.Describe("sprite", func() {
 		ts.assertSprite("g1.png", 32, 16)
 	})
 
-	bdd.XIt("Only Two identity file")
+	bdd.It("Only Two identity file", func() {
+		ts := newTestService(map[string]string{
+			"g1.t1.png": "t1.png",
+			"g1.t2.png": "t2.png",
+		})
+		s := New(`
+	.foo { background: url(g1.t1.png); }
+	.foobar { background: url(g1.t1.png); }
+		`, ts)
+		out, err := s.Gen()
+		assert.NoError(t(), err)
+		assert.Equal(t(), `
+	.foo { background: url(g1.png) no-repeat; }
+	.foobar { background: url(g1.png) no-repeat; }
+		`, out)
+		ts.assertSprite("g1.png", 16, 16)
+	})
 
 	bdd.XIt("background-image")
 
-	bdd.XIt("Two Groups")
+	bdd.It("Two Groups", func() {
+		ts := newTestService(map[string]string{
+			"g1.t1.png": "t1.png",
+			"g1.t2.png": "t2.png",
+			"g2.t1.png": "t1.png",
+			"g2.t2.png": "t2.png",
+		})
+		s := New(`
+	.foo { background: url(g1.t1.png); }
+	.bar { background: url(g1.t2.png); }
+	.foobar { background: url(g2.t1.png); }
+	.foo-bar { background: url(g2.t2.png); }
+		`, ts)
+		out, err := s.Gen()
+		assert.NoError(t(), err)
+		assert.Equal(t(), `
+	.foo { background: url(g1.png) no-repeat; }
+	.bar { background: url(g1.png) no-repeat -16px 0; }
+	.foobar { background: url(g2.png) no-repeat; }
+	.foo-bar { background: url(g2.png) no-repeat -16px 0; }
+		`, out)
+		ts.assertSprite("g1.png", 32, 16)
+		ts.assertSprite("g2.png", 32, 16)
+	})
 
-	bdd.XIt("Ignore images")
+	bdd.It("Ignore images", func() {
+		ts := newTestService(map[string]string{
+			"g1.t1.png": "t1.png",
+			"g1.t2.png": "t2.png",
+		})
+		s := New(`
+	.foo { background: url(g1.t1.png); }
+	.foobar { background: url(g1.t2.png); }
+	.bar { background: url(bar.png); }
+		`, ts)
+		out, err := s.Gen()
+		assert.NoError(t(), err)
+		assert.Equal(t(), `
+	.foo { background: url(g1.png) no-repeat; }
+	.foobar { background: url(g1.png) no-repeat -16px 0; }
+	.bar { background: url(bar.png); }
+		`, out)
+		ts.assertSprite("g1.png", 32, 16)
+	})
 
-	bdd.XIt("SetSpritePath")
+	bdd.It("Icons not the same size", func() {
+		ts := newTestService(map[string]string{
+			"g1.t1.png": "24.png",
+			"g1.t2.png": "t2.png",
+		})
+		s := New(`
+	.foo { background: url(g1.t1.png); }
+	.foobar { background: url(g1.t2.png); }
+		`, ts)
+		out, err := s.Gen()
+		assert.NoError(t(), err)
+		assert.Equal(t(), `
+	.foo { background: url(g1.png) no-repeat; }
+	.foobar { background: url(g1.png) no-repeat -24px 0; }
+		`, out)
+		ts.assertSprite("g1.png", 40, 24)
+	})
 
-	bdd.XIt("Icons not the same size")
+	bdd.It("url('img')", func() {
+		ts := newTestService(map[string]string{
+			"g1.t1.png": "t1.png",
+			"g1.t2.png": "t2.png",
+		})
+		s := New(`
+	.foo { background: url('g1.t1.png'); }
+	.bar { background: url("g1.t2.png"); }
+		`, ts)
+		out, err := s.Gen()
+		assert.NoError(t(), err)
+		assert.Equal(t(), `
+	.foo { background: url(g1.png) no-repeat; }
+	.bar { background: url(g1.png) no-repeat -16px 0; }
+		`, out)
+		ts.assertSprite("g1.png", 32, 16)
+	})
 
-	bdd.XIt("url('img')")
-
-	bdd.XIt("url() not after background")
+	bdd.It("url() not after background", func() {
+		ts := newTestService(map[string]string{
+			"g1.t1.png": "t1.png",
+		})
+		s := New(`
+	.foo { bkg: url(g1.t1.png); }
+		`, ts)
+		out, err := s.Gen()
+		assert.NoError(t(), err)
+		assert.Equal(t(), `
+	.foo { bkg: url(g1.t1.png); }
+		`, out)
+	})
 
 	bdd.XIt("background has more info than url()")
 

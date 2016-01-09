@@ -52,12 +52,6 @@ func New(css string, service Service) *Spriter {
 	}
 }
 
-// SetSpritePath set the relative path of generated sprite image files. Default
-// is "", which means store sprite in the same css directory. Other possible
-// value can be "../images", "images/".
-func (s *Spriter) SetSpritePath(path string) {
-}
-
 // Do the generation, return translated css file content. Generated sprite
 // image files are saved using Service interface.
 func (s *Spriter) Gen() (css string, err error) {
@@ -158,7 +152,12 @@ func scan(css string) ([]*scanner.Token, error) {
 }
 
 func extractUriFile(uri string) (file string, err error) {
-	return uri[4 : len(uri)-1], nil
+	s := uri[4 : len(uri)-1]
+	switch s[0] {
+	case '"', '\'':
+		s = s[1 : len(s)-1]
+	}
+	return s, nil
 }
 
 // extract file name, expect [group].[name].png. Group name is empty string if
