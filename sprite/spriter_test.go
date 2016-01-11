@@ -36,10 +36,12 @@ var _ = bdd.Describe("sprite", func() {
 		`, ts)
 		out, err := s.Gen()
 		assert.NoError(t(), err)
-		assert.Equal(t(), `
-	.foo { background: url(g1.png) no-repeat; }
-	.bar { background: url(g1.png) no-repeat -16px 0; }
-		`, out)
+		assert.Equal(t(), `.foo {
+  background: url(g1.png) no-repeat;
+}
+.bar {
+  background: url(g1.png) no-repeat -16px 0;
+}`, out)
 		ts.assertSprite("g1.png", 32, 16)
 	})
 
@@ -53,9 +55,9 @@ var _ = bdd.Describe("sprite", func() {
 		`, ts)
 		out, err := s.Gen()
 		assert.NoError(t(), err)
-		assert.Equal(t(), `
-	.foo { background: url(g1.png) no-repeat; }
-		`, out)
+		assert.Equal(t(), `.foo {
+  background: url(g1.png) no-repeat;
+}`, out)
 		ts.assertSprite("g1.png", 16, 16)
 	})
 
@@ -72,12 +74,18 @@ var _ = bdd.Describe("sprite", func() {
 		`, ts)
 		out, err := s.Gen()
 		assert.NoError(t(), err)
-		assert.Equal(t(), `
-	.foo { background: url(g1.png) no-repeat; }
-	.bar { background: url(g1.png) no-repeat -16px 0; }
-	.foobar { background: url(g1.png) no-repeat; }
-	.foo-bar { background: url(g1.png) no-repeat -16px 0; }
-		`, out)
+		assert.Equal(t(), `.foo {
+  background: url(g1.png) no-repeat;
+}
+.bar {
+  background: url(g1.png) no-repeat -16px 0;
+}
+.foobar {
+  background: url(g1.png) no-repeat;
+}
+.foo-bar {
+  background: url(g1.png) no-repeat -16px 0;
+}`, out)
 		ts.assertSprite("g1.png", 32, 16)
 	})
 
@@ -92,10 +100,12 @@ var _ = bdd.Describe("sprite", func() {
 		`, ts)
 		out, err := s.Gen()
 		assert.NoError(t(), err)
-		assert.Equal(t(), `
-	.foo { background: url(g1.png) no-repeat; }
-	.foobar { background: url(g1.png) no-repeat; }
-		`, out)
+		assert.Equal(t(), `.foo {
+  background: url(g1.png) no-repeat;
+}
+.foobar {
+  background: url(g1.png) no-repeat;
+}`, out)
 		ts.assertSprite("g1.png", 16, 16)
 	})
 
@@ -116,12 +126,18 @@ var _ = bdd.Describe("sprite", func() {
 		`, ts)
 		out, err := s.Gen()
 		assert.NoError(t(), err)
-		assert.Equal(t(), `
-	.foo { background: url(g1.png) no-repeat; }
-	.bar { background: url(g1.png) no-repeat -16px 0; }
-	.foobar { background: url(g2.png) no-repeat; }
-	.foo-bar { background: url(g2.png) no-repeat -16px 0; }
-		`, out)
+		assert.Equal(t(), `.foo {
+  background: url(g1.png) no-repeat;
+}
+.bar {
+  background: url(g1.png) no-repeat -16px 0;
+}
+.foobar {
+  background: url(g2.png) no-repeat;
+}
+.foo-bar {
+  background: url(g2.png) no-repeat -16px 0;
+}`, out)
 		ts.assertSprite("g1.png", 32, 16)
 		ts.assertSprite("g2.png", 32, 16)
 	})
@@ -138,11 +154,15 @@ var _ = bdd.Describe("sprite", func() {
 		`, ts)
 		out, err := s.Gen()
 		assert.NoError(t(), err)
-		assert.Equal(t(), `
-	.foo { background: url(g1.png) no-repeat; }
-	.foobar { background: url(g1.png) no-repeat -16px 0; }
-	.bar { background: url(bar.png); }
-		`, out)
+		assert.Equal(t(), `.foo {
+  background: url(g1.png) no-repeat;
+}
+.foobar {
+  background: url(g1.png) no-repeat -16px 0;
+}
+.bar {
+  background: url(bar.png);
+}`, out)
 		ts.assertSprite("g1.png", 32, 16)
 	})
 
@@ -157,10 +177,12 @@ var _ = bdd.Describe("sprite", func() {
 		`, ts)
 		out, err := s.Gen()
 		assert.NoError(t(), err)
-		assert.Equal(t(), `
-	.foo { background: url(g1.png) no-repeat; }
-	.foobar { background: url(g1.png) no-repeat -24px 0; }
-		`, out)
+		assert.Equal(t(), `.foo {
+  background: url(g1.png) no-repeat;
+}
+.foobar {
+  background: url(g1.png) no-repeat -24px 0;
+}`, out)
 		ts.assertSprite("g1.png", 40, 24)
 	})
 
@@ -175,10 +197,12 @@ var _ = bdd.Describe("sprite", func() {
 		`, ts)
 		out, err := s.Gen()
 		assert.NoError(t(), err)
-		assert.Equal(t(), `
-	.foo { background: url(g1.png) no-repeat; }
-	.bar { background: url(g1.png) no-repeat -16px 0; }
-		`, out)
+		assert.Equal(t(), `.foo {
+  background: url(g1.png) no-repeat;
+}
+.bar {
+  background: url(g1.png) no-repeat -16px 0;
+}`, out)
 		ts.assertSprite("g1.png", 32, 16)
 	})
 
@@ -191,9 +215,9 @@ var _ = bdd.Describe("sprite", func() {
 		`, ts)
 		out, err := s.Gen()
 		assert.NoError(t(), err)
-		assert.Equal(t(), `
-	.foo { bkg: url(g1.t1.png); }
-		`, out)
+		assert.Equal(t(), `.foo {
+  bkg: url(g1.t1.png);
+}`, out)
 	})
 
 	bdd.XIt("background has more info than url()")

@@ -9,8 +9,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/gorilla/css/scanner"
-	"github.com/redforks/css/writer"
+	"github.com/redforks/douceur/css"
+	"github.com/redforks/douceur/parser"
 	"github.com/redforks/errors"
 )
 
@@ -55,26 +55,23 @@ func New(css string, service Service) *Spriter {
 
 // Do the generation, return translated css file content. Generated sprite
 // image files are saved using Service interface.
-func (s *Spriter) Gen() (css string, err error) {
-	var tks []*scanner.Token
-	tks, err = scan(s.css)
+func (s *Spriter) Gen() (out string, err error) {
+	var sheet *css.Stylesheet
+	sheet, err = scan(s.css)
 	if err != nil {
 		return
 	}
+	rules := sheet.Rules
 
-	needTranslate := false
 	groups := make(map[string][]*cssImage)
-	for _, tk := range tks {
-		switch tk.Type {
-		case scanner.TokenIdent:
-			needTranslate = tk.Value == "background"
-		case scanner.TokenURI:
-			if needTranslate {
+	for _, rule := range rules {
+		for _, attr := range rule.Declarations {
+			if attr.Property == "background" {
 				var (
 					st *cssImage
 					g  string
 				)
-				if st, g, err = s.parseCssImage(tk); err != nil {
+				if st, g, err = s.parseCssImage(attr); err != nil {
 					return
 				}
 
@@ -111,7 +108,7 @@ func (s *Spriter) Gen() (css string, err error) {
 		}
 	}
 
-	return writer.Dumps(tks)
+	return sheet.String(), nil
 }
 
 func getSpriteSize(imgs []*cssImage) image.Point {
@@ -137,20 +134,12 @@ func closeClosable(o interface{}) {
 	}
 }
 
-func scan(css string) ([]*scanner.Token, error) {
-	s := scanner.New(css)
-	tks := []*scanner.Token{}
-	for {
-		tk := s.Next()
-		switch tk.Type {
-		case scanner.TokenEOF:
-			return tks, nil
-		case scanner.TokenError:
-			return nil, errors.Input(tk.Value)
-		default:
-			tks = append(tks, tk)
-		}
+func scan(input string) (*css.Stylesheet, error) {
+	sheet, err := parser.Parse(input)
+	if err != nil {
+		return nil, errors.NewInput(err)
 	}
+	return sheet, nil
 }
 
 func extractUriFile(uri string) (file string, err error) {
@@ -175,7 +164,7 @@ func extractGroup(path string) (group string) {
 
 // Represent a css image style
 type cssImage struct {
-	tk  *scanner.Token
+	tk  *css.Declaration
 	img *stamp
 }
 
@@ -200,9 +189,9 @@ func (st *stamp) dy() int {
 
 // Parse stamp from a image url css token. stamp is nil if the url need
 // ignored: not png, not expected filename format.
-func (s *Spriter) parseCssImage(tk *scanner.Token) (cssImg *cssImage, groupName string, err error) {
+func (s *Spriter) parseCssImage(attr *css.Declaration) (cssImg *cssImage, groupName string, err error) {
 	var fn string
-	if fn, err = extractUriFile(tk.Value); err != nil {
+	if fn, err = extractUriFile(attr.Value); err != nil {
 		return
 	}
 
@@ -217,7 +206,7 @@ func (s *Spriter) parseCssImage(tk *scanner.Token) (cssImg *cssImage, groupName 
 	}
 
 	cssImg = &cssImage{
-		tk,
+		attr,
 		st,
 	}
 	return
