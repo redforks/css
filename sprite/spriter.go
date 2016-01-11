@@ -6,6 +6,7 @@ import (
 	"image/draw"
 	"image/png"
 	"io"
+	"path/filepath"
 	"strings"
 
 	"github.com/gorilla/css/scanner"
@@ -163,8 +164,8 @@ func extractUriFile(uri string) (file string, err error) {
 
 // extract file name, expect [group].[name].png. Group name is empty string if
 // not expected format, or extension not supported
-func extractGroup(file string) (group string) {
-	words := strings.Split(file, ".")
+func extractGroup(path string) (group string) {
+	words := strings.Split(filepath.Base(path), ".")
 	if len(words) != 3 || words[2] != "png" {
 		return
 	}

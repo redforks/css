@@ -27,12 +27,12 @@ var _ = bdd.Describe("sprite", func() {
 
 	bdd.It("Two Icons", func() {
 		ts := newTestService(map[string]string{
-			"g1.t1.png": "t1.png",
-			"g1.t2.png": "t2.png",
+			"g1.t1.png":       "t1.png",
+			"image/g1.t2.png": "t2.png",
 		})
 		s := New(`
 	.foo { background: url(g1.t1.png); }
-	.bar { background: url(g1.t2.png); }
+	.bar { background: url(image/g1.t2.png); }
 		`, ts)
 		out, err := s.Gen()
 		assert.NoError(t(), err)
