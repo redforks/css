@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/gorilla/css/scanner"
+	"github.com/redforks/css-1/scanner"
 	"github.com/redforks/css/writer"
 	"github.com/redforks/errors"
 )

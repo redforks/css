@@ -4,8 +4,8 @@ import (
 	"bytes"
 
 	"github.com/golang/mock/gomock"
-	"github.com/gorilla/css/scanner"
 	bdd "github.com/onsi/ginkgo"
+	"github.com/redforks/css-1/scanner"
 	"github.com/redforks/testing/iotest"
 	"github.com/stretchr/testify/assert"
 )

@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/gorilla/css/scanner"
+	"github.com/redforks/css-1/scanner"
 	"github.com/redforks/css/writer"
 )
 

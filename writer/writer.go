@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"io"
 
-	"github.com/gorilla/css/scanner"
+	"github.com/redforks/css-1/scanner"
 )
 
 // Writer to write gorilla css token stream to a io.Writer.
