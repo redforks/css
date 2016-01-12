@@ -1,6 +1,9 @@
 package sprite
 
 import (
+	"bytes"
+	"crypto/md5"
+	"encoding/base64"
 	"fmt"
 	"image"
 	"image/draw"
@@ -85,29 +88,40 @@ func (s *Spriter) Gen() (css string, err error) {
 		}
 	}
 
-	for g, sts := range groups {
+	for _, sts := range groups {
 		size := getSpriteSize(sts)
 		var sprite = image.NewRGBA(image.Rectangle{Min: image.Point{}, Max: size})
 		p := image.Pt(0, 0)
 		for _, st := range sts {
-			st.tk.Value = "url(" + g + ".png) no-repeat"
-			if st.img.sp.X != 0 {
-				st.tk.Value += fmt.Sprintf(" %dpx 0", st.img.sp.X)
-			}
 			b := st.img.bounds()
 			draw.Draw(sprite, b.Add(p), st.img.img, b.Min, draw.Src)
 			p.X += st.img.dx()
 		}
 
+		hash := md5.New()
+		buf := &bytes.Buffer{}
+		w := io.MultiWriter(buf, hash)
+		if err = png.Encode(w, sprite); err != nil {
+			err = errors.NewRuntime(err)
+			return
+		}
+		token := base64.URLEncoding.EncodeToString(hash.Sum(nil)[:6])
+
 		var f io.Writer
-		f, err = s.sv.CreateSpriteImage(g + ".png")
+		f, err = s.sv.CreateSpriteImage(token + ".png")
 		if err != nil {
 			return
 		}
 		defer closeClosable(f)
-		if err = png.Encode(f, sprite); err != nil {
-			err = errors.NewRuntime(err)
+		if _, err = f.Write(buf.Bytes()); err != nil {
 			return
+		}
+
+		for _, st := range sts {
+			st.tk.Value = "url(" + token + ".png) no-repeat"
+			if st.img.sp.X != 0 {
+				st.tk.Value += fmt.Sprintf(" %dpx 0", st.img.sp.X)
+			}
 		}
 	}
 
