@@ -91,11 +91,9 @@ func (s *Spriter) Gen() (css string, err error) {
 	for _, sts := range groups {
 		size := getSpriteSize(sts)
 		var sprite = image.NewRGBA(image.Rectangle{Min: image.Point{}, Max: size})
-		p := image.Pt(0, 0)
 		for _, st := range sts {
 			b := st.img.bounds()
-			draw.Draw(sprite, b.Add(p), st.img.img, b.Min, draw.Src)
-			p.X += st.img.dx()
+			draw.Draw(sprite, b.Add(image.Pt(-st.img.sp.X, st.img.sp.Y)), st.img.img, b.Min, draw.Src)
 		}
 
 		hash := md5.New()
