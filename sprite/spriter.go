@@ -9,6 +9,7 @@ import (
 	"image/draw"
 	"image/png"
 	"io"
+	"log"
 	"path/filepath"
 	"strings"
 
@@ -93,6 +94,7 @@ func (s *Spriter) Gen() (css string, err error) {
 		var sprite = image.NewRGBA(image.Rectangle{Min: image.Point{}, Max: size})
 		for _, st := range sts {
 			b := st.img.bounds()
+			fmt.Println(st.img.sp)
 			draw.Draw(sprite, b.Add(image.Pt(-st.img.sp.X, st.img.sp.Y)), st.img.img, b.Min, draw.Src)
 		}
 
@@ -145,7 +147,9 @@ func getSpriteSize(imgs []*cssImage) image.Point {
 func closeClosable(o interface{}) {
 	closable, ok := o.(io.Closer)
 	if ok {
-		closable.Close()
+		if err := closable.Close(); err != nil {
+			log.Println(err)
+		}
 	}
 }
 
