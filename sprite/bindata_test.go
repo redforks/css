@@ -250,11 +250,11 @@ type bintree struct {
 }
 
 var _bintree = &bintree{nil, map[string]*bintree{
-	"testdata": &bintree{nil, map[string]*bintree{
-		"24.png": &bintree{testdata24Png, map[string]*bintree{}},
-		"t1.png": &bintree{testdataT1Png, map[string]*bintree{}},
-		"t2.png": &bintree{testdataT2Png, map[string]*bintree{}},
-		"t3.png": &bintree{testdataT3Png, map[string]*bintree{}},
+	"testdata": {nil, map[string]*bintree{
+		"24.png": {testdata24Png, map[string]*bintree{}},
+		"t1.png": {testdataT1Png, map[string]*bintree{}},
+		"t2.png": {testdataT2Png, map[string]*bintree{}},
+		"t3.png": {testdataT3Png, map[string]*bintree{}},
 	}},
 }}
 
