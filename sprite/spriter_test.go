@@ -10,7 +10,7 @@ import (
 	"path"
 
 	bdd "github.com/onsi/ginkgo"
-	"github.com/stretchr/testify/assert"
+	. "github.com/onsi/gomega"
 )
 
 var _ = bdd.Describe("sprite", func() {
@@ -19,10 +19,8 @@ var _ = bdd.Describe("sprite", func() {
 		ts := newTestService(nil)
 
 		s := New("", ts)
-		out, err := s.Gen()
-		assert.Equal(t(), "", out)
-		assert.NoError(t(), err)
-		assert.Empty(t(), ts.sprites)
+		Ω(s.Gen()).Should(Equal(""))
+		Ω(ts.sprites).Should(BeEmpty())
 	})
 
 	bdd.It("Two Icons", func() {
@@ -34,12 +32,11 @@ var _ = bdd.Describe("sprite", func() {
 	.foo { background: url(g1.t1.png); }
 	.bar { background: url(image/g1.t2.png); }
 		`, ts)
-		out, err := s.Gen()
-		assert.NoError(t(), err)
-		assert.Equal(t(), `
+		Ω(s.Gen()).Should(Equal(`
 	.foo { background: url(l01cVKU8.png) no-repeat; }
 	.bar { background: url(l01cVKU8.png) no-repeat -16px 0; }
-		`, out)
+		`))
+
 		ts.assertSprite("l01cVKU8.png", 32, 16)
 	})
 
@@ -51,11 +48,9 @@ var _ = bdd.Describe("sprite", func() {
 		s := New(`
 	.foo { background: url(g1.t1.png); }
 		`, ts)
-		out, err := s.Gen()
-		assert.NoError(t(), err)
-		assert.Equal(t(), `
+		Ω(s.Gen()).Should(Equal(`
 	.foo { background: url(cobz_bF6.png) no-repeat; }
-		`, out)
+		`))
 		ts.assertSprite("cobz_bF6.png", 16, 16)
 	})
 
@@ -70,14 +65,12 @@ var _ = bdd.Describe("sprite", func() {
 	.foobar { background: url(g1.t1.png); }
 	.foo-bar { background: url(g1.t2.png); }
 		`, ts)
-		out, err := s.Gen()
-		assert.NoError(t(), err)
-		assert.Equal(t(), `
+		Ω(s.Gen()).Should(Equal(`
 	.foo { background: url(l01cVKU8.png) no-repeat; }
 	.bar { background: url(l01cVKU8.png) no-repeat -16px 0; }
 	.foobar { background: url(l01cVKU8.png) no-repeat; }
 	.foo-bar { background: url(l01cVKU8.png) no-repeat -16px 0; }
-		`, out)
+		`))
 		ts.assertSprite("l01cVKU8.png", 32, 16)
 	})
 
@@ -90,12 +83,10 @@ var _ = bdd.Describe("sprite", func() {
 	.foo { background: url(g1.t1.png); }
 	.foobar { background: url(g1.t1.png); }
 		`, ts)
-		out, err := s.Gen()
-		assert.NoError(t(), err)
-		assert.Equal(t(), `
+		Ω(s.Gen()).Should(Equal(`
 	.foo { background: url(cobz_bF6.png) no-repeat; }
 	.foobar { background: url(cobz_bF6.png) no-repeat; }
-		`, out)
+		`))
 		ts.assertSprite("cobz_bF6.png", 16, 16)
 	})
 
@@ -114,14 +105,12 @@ var _ = bdd.Describe("sprite", func() {
 	.foobar { background: url(g2.t2.png); }
 	.foo-bar { background: url(g2.t1.png); }
 		`, ts)
-		out, err := s.Gen()
-		assert.NoError(t(), err)
-		assert.Equal(t(), `
+		Ω(s.Gen()).Should(Equal(`
 	.foo { background: url(l01cVKU8.png) no-repeat; }
 	.bar { background: url(l01cVKU8.png) no-repeat -16px 0; }
 	.foobar { background: url(piouFODI.png) no-repeat; }
 	.foo-bar { background: url(piouFODI.png) no-repeat -16px 0; }
-		`, out)
+		`))
 		ts.assertSprite("l01cVKU8.png", 32, 16)
 		ts.assertSprite("piouFODI.png", 32, 16)
 	})
@@ -136,13 +125,11 @@ var _ = bdd.Describe("sprite", func() {
 	.foobar { background: url(g1.t2.png); }
 	.bar { background: url(bar.png); }
 		`, ts)
-		out, err := s.Gen()
-		assert.NoError(t(), err)
-		assert.Equal(t(), `
+		Ω(s.Gen()).Should(Equal(`
 	.foo { background: url(l01cVKU8.png) no-repeat; }
 	.foobar { background: url(l01cVKU8.png) no-repeat -16px 0; }
 	.bar { background: url(bar.png); }
-		`, out)
+		`))
 		ts.assertSprite("l01cVKU8.png", 32, 16)
 	})
 
@@ -155,12 +142,10 @@ var _ = bdd.Describe("sprite", func() {
 	.foo { background: url(g1.t1.png); }
 	.foobar { background: url(g1.t2.png); }
 		`, ts)
-		out, err := s.Gen()
-		assert.NoError(t(), err)
-		assert.Equal(t(), `
+		Ω(s.Gen()).Should(Equal(`
 	.foo { background: url(TRw0KSHq.png) no-repeat; }
 	.foobar { background: url(TRw0KSHq.png) no-repeat -24px 0; }
-		`, out)
+		`))
 		ts.assertSprite("TRw0KSHq.png", 40, 24)
 	})
 
@@ -173,12 +158,10 @@ var _ = bdd.Describe("sprite", func() {
 	.foo { background: url('g1.t1.png'); }
 	.bar { background: url("g1.t2.png"); }
 		`, ts)
-		out, err := s.Gen()
-		assert.NoError(t(), err)
-		assert.Equal(t(), `
+		Ω(s.Gen()).Should(Equal(`
 	.foo { background: url(l01cVKU8.png) no-repeat; }
 	.bar { background: url(l01cVKU8.png) no-repeat -16px 0; }
-		`, out)
+		`))
 		ts.assertSprite("l01cVKU8.png", 32, 16)
 	})
 
@@ -189,11 +172,9 @@ var _ = bdd.Describe("sprite", func() {
 		s := New(`
 	.foo { bkg: url(g1.t1.png); }
 		`, ts)
-		out, err := s.Gen()
-		assert.NoError(t(), err)
-		assert.Equal(t(), `
+		Ω(s.Gen()).Should(Equal(`
 	.foo { bkg: url(g1.t1.png); }
-		`, out)
+		`))
 	})
 
 	bdd.XIt("background has more info than url()")
@@ -211,7 +192,7 @@ func newTestService(images map[string]string) *testService {
 	imgs := make(map[string][]byte)
 	for filename, resName := range images {
 		content, err := Asset(path.Join("testdata", resName))
-		assert.NoError(t(), err)
+		Ω(err).Should(Succeed())
 		imgs[filename] = content
 	}
 	return &testService{
@@ -236,9 +217,9 @@ func (s *testService) CreateSpriteImage(path string) (io.Writer, error) {
 
 func (s *testService) assertSprite(path string, width, height int) {
 	buf := s.sprites[path]
-	assert.NotNil(t(), buf)
+	Ω(buf).ShouldNot(BeNil())
 	config, err := png.DecodeConfig(bytes.NewReader(buf.Bytes()))
-	assert.NoError(t(), err)
-	assert.Equal(t(), width, config.Width)
-	assert.Equal(t(), height, config.Height)
+	Ω(err).Should(Succeed())
+	Ω(config.Width).Should(Equal(width))
+	Ω(config.Height).Should(Equal(height))
 }

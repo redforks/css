@@ -5,9 +5,9 @@ import (
 
 	"github.com/golang/mock/gomock"
 	bdd "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 	"github.com/redforks/css-1/scanner"
 	"github.com/redforks/testing/iotest"
-	"github.com/stretchr/testify/assert"
 )
 
 var _ = bdd.Describe("Writer", func() {
@@ -17,8 +17,8 @@ var _ = bdd.Describe("Writer", func() {
 	)
 
 	assertClose := func(content string) {
-		assert.NoError(t(), w.Close())
-		assert.Equal(t(), content, (string)(buf.Bytes()))
+		Ω(w.Close()).Should(Succeed())
+		Ω(buf.Bytes()).Should(BeEquivalentTo(content))
 	}
 
 	bdd.BeforeEach(func() {
@@ -219,7 +219,7 @@ var _ = bdd.Describe("Writer", func() {
 		bufMock.EXPECT().Close()
 
 		w := New(bufMock)
-		assert.NoError(t(), w.Close())
+		Ω(w.Close()).Should(Succeed())
 	})
 
 	bdd.It("Inner writer error", func() {
@@ -236,7 +236,7 @@ var _ = bdd.Describe("Writer", func() {
 			Type:  scanner.TokenIdent,
 			Value: "foobar",
 		})
-		assert.Error(t(), w.Close(), iotest.ErrWriter.Error())
+		Ω(w.Close()).Should(MatchError(iotest.ErrWriter))
 	})
 
 	bdd.It("Dumps", func() {
@@ -251,9 +251,7 @@ var _ = bdd.Describe("Writer", func() {
 		for to := s.Next(); to.Type != scanner.TokenEOF; to = s.Next() {
 			tokens = append(tokens, to)
 		}
-		act, err := Dumps(tokens)
-		assert.NoError(t(), err)
-		assert.Equal(t(), css, act)
+		Ω(Dumps(tokens)).Should(Equal(css))
 	})
 
 })
