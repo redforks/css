@@ -4,13 +4,13 @@ import (
 	"bytes"
 
 	"github.com/golang/mock/gomock"
-	bdd "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/redforks/css-1/scanner"
 	"github.com/redforks/testing/iotest"
 )
 
-var _ = bdd.Describe("Writer", func() {
+var _ = Describe("Writer", func() {
 	var (
 		buf bytes.Buffer
 		w   *Writer
@@ -21,16 +21,16 @@ var _ = bdd.Describe("Writer", func() {
 		Ω(buf.Bytes()).Should(BeEquivalentTo(content))
 	}
 
-	bdd.BeforeEach(func() {
+	BeforeEach(func() {
 		buf = bytes.Buffer{}
 		w = New(&buf)
 	})
 
-	bdd.It("Empty", func() {
+	It("Empty", func() {
 		assertClose("")
 	})
 
-	bdd.It("Ident", func() {
+	It("Ident", func() {
 		w.Write(&scanner.Token{
 			Type:  scanner.TokenIdent,
 			Value: "foo",
@@ -38,7 +38,7 @@ var _ = bdd.Describe("Writer", func() {
 		assertClose("foo")
 	})
 
-	bdd.It("At Keyword", func() {
+	It("At Keyword", func() {
 		w.Write(&scanner.Token{
 			Type:  scanner.TokenAtKeyword,
 			Value: "@foo",
@@ -46,7 +46,7 @@ var _ = bdd.Describe("Writer", func() {
 		assertClose("@foo")
 	})
 
-	bdd.It("String", func() {
+	It("String", func() {
 		w.Write(&scanner.Token{
 			Type:  scanner.TokenString,
 			Value: `"foo"`,
@@ -54,7 +54,7 @@ var _ = bdd.Describe("Writer", func() {
 		assertClose(`"foo"`)
 	})
 
-	bdd.It("Hash", func() {
+	It("Hash", func() {
 		w.Write(&scanner.Token{
 			Type:  scanner.TokenHash,
 			Value: "#name",
@@ -62,7 +62,7 @@ var _ = bdd.Describe("Writer", func() {
 		assertClose("#name")
 	})
 
-	bdd.It("Number", func() {
+	It("Number", func() {
 		w.Write(&scanner.Token{
 			Type:  scanner.TokenNumber,
 			Value: "42",
@@ -70,7 +70,7 @@ var _ = bdd.Describe("Writer", func() {
 		assertClose("42")
 	})
 
-	bdd.It("Percentage", func() {
+	It("Percentage", func() {
 		w.Write(&scanner.Token{
 			Type:  scanner.TokenPercentage,
 			Value: "42%",
@@ -78,7 +78,7 @@ var _ = bdd.Describe("Writer", func() {
 		assertClose("42%")
 	})
 
-	bdd.It("Dimension", func() {
+	It("Dimension", func() {
 		w.Write(&scanner.Token{
 			Type:  scanner.TokenDimension,
 			Value: "42px",
@@ -86,7 +86,7 @@ var _ = bdd.Describe("Writer", func() {
 		assertClose("42px")
 	})
 
-	bdd.It("URI", func() {
+	It("URI", func() {
 		w.Write(&scanner.Token{
 			Type:  scanner.TokenURI,
 			Value: "url('http://www.google.com/')",
@@ -94,7 +94,7 @@ var _ = bdd.Describe("Writer", func() {
 		assertClose("url('http://www.google.com/')")
 	})
 
-	bdd.It("UnicodeRange", func() {
+	It("UnicodeRange", func() {
 		w.Write(&scanner.Token{
 			Type:  scanner.TokenUnicodeRange,
 			Value: "U+0042",
@@ -102,7 +102,7 @@ var _ = bdd.Describe("Writer", func() {
 		assertClose("U+0042")
 	})
 
-	bdd.It("CDO", func() {
+	It("CDO", func() {
 		w.Write(&scanner.Token{
 			Type:  scanner.TokenCDO,
 			Value: "<!--",
@@ -110,7 +110,7 @@ var _ = bdd.Describe("Writer", func() {
 		assertClose("<!--")
 	})
 
-	bdd.It("CDC", func() {
+	It("CDC", func() {
 		w.Write(&scanner.Token{
 			Type:  scanner.TokenCDC,
 			Value: "-->",
@@ -118,7 +118,7 @@ var _ = bdd.Describe("Writer", func() {
 		assertClose("-->")
 	})
 
-	bdd.It("S", func() {
+	It("S", func() {
 		w.Write(&scanner.Token{
 			Type:  scanner.TokenS,
 			Value: "   \n   \t   \n",
@@ -126,7 +126,7 @@ var _ = bdd.Describe("Writer", func() {
 		assertClose("   \n   \t   \n")
 	})
 
-	bdd.It("Comment", func() {
+	It("Comment", func() {
 		w.Write(&scanner.Token{
 			Type:  scanner.TokenComment,
 			Value: "/* foo */",
@@ -134,7 +134,7 @@ var _ = bdd.Describe("Writer", func() {
 		assertClose("/* foo */")
 	})
 
-	bdd.It("Function", func() {
+	It("Function", func() {
 		w.Write(&scanner.Token{
 			Type:  scanner.TokenFunction,
 			Value: "bar(",
@@ -142,7 +142,7 @@ var _ = bdd.Describe("Writer", func() {
 		assertClose("bar(")
 	})
 
-	bdd.It("Includes", func() {
+	It("Includes", func() {
 		w.Write(&scanner.Token{
 			Type:  scanner.TokenIncludes,
 			Value: "~=",
@@ -150,7 +150,7 @@ var _ = bdd.Describe("Writer", func() {
 		assertClose("~=")
 	})
 
-	bdd.It("DashMatch", func() {
+	It("DashMatch", func() {
 		w.Write(&scanner.Token{
 			Type:  scanner.TokenIncludes,
 			Value: "|=",
@@ -158,7 +158,7 @@ var _ = bdd.Describe("Writer", func() {
 		assertClose("|=")
 	})
 
-	bdd.It("PrefixMatch", func() {
+	It("PrefixMatch", func() {
 		w.Write(&scanner.Token{
 			Type:  scanner.TokenPrefixMatch,
 			Value: "^=",
@@ -166,7 +166,7 @@ var _ = bdd.Describe("Writer", func() {
 		assertClose("^=")
 	})
 
-	bdd.It("SuffixMatch", func() {
+	It("SuffixMatch", func() {
 		w.Write(&scanner.Token{
 			Type:  scanner.TokenSuffixMatch,
 			Value: "$=",
@@ -174,7 +174,7 @@ var _ = bdd.Describe("Writer", func() {
 		assertClose("$=")
 	})
 
-	bdd.It("SubstringMatch", func() {
+	It("SubstringMatch", func() {
 		w.Write(&scanner.Token{
 			Type:  scanner.TokenSubstringMatch,
 			Value: "*=",
@@ -182,7 +182,7 @@ var _ = bdd.Describe("Writer", func() {
 		assertClose("*=")
 	})
 
-	bdd.It("Char", func() {
+	It("Char", func() {
 		w.Write(&scanner.Token{
 			Type:  scanner.TokenChar,
 			Value: "{",
@@ -190,7 +190,7 @@ var _ = bdd.Describe("Writer", func() {
 		assertClose("{")
 	})
 
-	bdd.It("BOM", func() {
+	It("BOM", func() {
 		w.Write(&scanner.Token{
 			Type:  scanner.TokenBOM,
 			Value: "\uFEFF",
@@ -198,7 +198,7 @@ var _ = bdd.Describe("Writer", func() {
 		assertClose("\uFEFF")
 	})
 
-	bdd.It("Parse and Write", func() {
+	It("Parse and Write", func() {
 		css := `
 		// comment
 		.foo {
@@ -212,7 +212,7 @@ var _ = bdd.Describe("Writer", func() {
 		assertClose(css)
 	})
 
-	bdd.It("Close closable writer", func() {
+	It("Close closable writer", func() {
 		controller := gomock.NewController(t())
 		defer controller.Finish()
 		bufMock := NewMockWriteCloser(controller)
@@ -222,7 +222,7 @@ var _ = bdd.Describe("Writer", func() {
 		Ω(w.Close()).Should(Succeed())
 	})
 
-	bdd.It("Inner writer error", func() {
+	It("Inner writer error", func() {
 		w := New(iotest.ErrorWriter(5))
 		w.Write(&scanner.Token{
 			Type:  scanner.TokenIdent,
@@ -239,7 +239,7 @@ var _ = bdd.Describe("Writer", func() {
 		Ω(w.Close()).Should(MatchError(iotest.ErrWriter))
 	})
 
-	bdd.It("Dumps", func() {
+	It("Dumps", func() {
 		css := `
 		// comment
 		.foo {

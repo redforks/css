@@ -9,13 +9,13 @@ import (
 	"io"
 	"path"
 
-	bdd "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
 
-var _ = bdd.Describe("sprite", func() {
+var _ = Describe("sprite", func() {
 
-	bdd.It("Empty", func() {
+	It("Empty", func() {
 		ts := newTestService(nil)
 
 		s := New("", ts)
@@ -23,7 +23,7 @@ var _ = bdd.Describe("sprite", func() {
 		Ω(ts.sprites).Should(BeEmpty())
 	})
 
-	bdd.It("Two Icons", func() {
+	It("Two Icons", func() {
 		ts := newTestService(map[string]string{
 			"g1.t1.png":       "t1.png",
 			"image/g1.t2.png": "t2.png",
@@ -40,7 +40,7 @@ var _ = bdd.Describe("sprite", func() {
 		ts.assertSprite("l01cVKU8.png", 32, 16)
 	})
 
-	bdd.It("Group has one file", func() {
+	It("Group has one file", func() {
 		ts := newTestService(map[string]string{
 			"g1.t1.png": "t1.png",
 			"g1.t2.png": "t2.png",
@@ -54,7 +54,7 @@ var _ = bdd.Describe("sprite", func() {
 		ts.assertSprite("cobz_bF6.png", 16, 16)
 	})
 
-	bdd.It("Reference two identity file", func() {
+	It("Reference two identity file", func() {
 		ts := newTestService(map[string]string{
 			"g1.t1.png": "t1.png",
 			"g1.t2.png": "t2.png",
@@ -74,7 +74,7 @@ var _ = bdd.Describe("sprite", func() {
 		ts.assertSprite("l01cVKU8.png", 32, 16)
 	})
 
-	bdd.It("Only Two identity file", func() {
+	It("Only Two identity file", func() {
 		ts := newTestService(map[string]string{
 			"g1.t1.png": "t1.png",
 			"g1.t2.png": "t2.png",
@@ -90,9 +90,9 @@ var _ = bdd.Describe("sprite", func() {
 		ts.assertSprite("cobz_bF6.png", 16, 16)
 	})
 
-	bdd.XIt("background-image")
+	XIt("background-image")
 
-	bdd.It("Two Groups", func() {
+	It("Two Groups", func() {
 		ts := newTestService(map[string]string{
 			"g1.t1.png": "t1.png",
 			"g1.t2.png": "t2.png",
@@ -115,7 +115,7 @@ var _ = bdd.Describe("sprite", func() {
 		ts.assertSprite("piouFODI.png", 32, 16)
 	})
 
-	bdd.It("Ignore images", func() {
+	It("Ignore images", func() {
 		ts := newTestService(map[string]string{
 			"g1.t1.png": "t1.png",
 			"g1.t2.png": "t2.png",
@@ -133,7 +133,7 @@ var _ = bdd.Describe("sprite", func() {
 		ts.assertSprite("l01cVKU8.png", 32, 16)
 	})
 
-	bdd.It("Icons not the same size", func() {
+	It("Icons not the same size", func() {
 		ts := newTestService(map[string]string{
 			"g1.t1.png": "24.png",
 			"g1.t2.png": "t2.png",
@@ -149,7 +149,7 @@ var _ = bdd.Describe("sprite", func() {
 		ts.assertSprite("TRw0KSHq.png", 40, 24)
 	})
 
-	bdd.It("url('img')", func() {
+	It("url('img')", func() {
 		ts := newTestService(map[string]string{
 			"g1.t1.png": "t1.png",
 			"g1.t2.png": "t2.png",
@@ -165,7 +165,7 @@ var _ = bdd.Describe("sprite", func() {
 		ts.assertSprite("l01cVKU8.png", 32, 16)
 	})
 
-	bdd.It("url() not after background", func() {
+	It("url() not after background", func() {
 		ts := newTestService(map[string]string{
 			"g1.t1.png": "t1.png",
 		})
@@ -177,7 +177,7 @@ var _ = bdd.Describe("sprite", func() {
 		`))
 	})
 
-	bdd.XIt("background has more info than url()")
+	XIt("background has more info than url()")
 
 })
 
