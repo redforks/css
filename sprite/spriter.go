@@ -94,7 +94,6 @@ func (s *Spriter) Gen() (css string, err error) {
 		var sprite = image.NewRGBA(image.Rectangle{Min: image.Point{}, Max: size})
 		for _, st := range sts {
 			b := st.img.bounds()
-			fmt.Println(st.img.sp)
 			draw.Draw(sprite, b.Add(image.Pt(-st.img.sp.X, st.img.sp.Y)), st.img.img, b.Min, draw.Src)
 		}
 
