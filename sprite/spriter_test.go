@@ -37,10 +37,10 @@ var _ = bdd.Describe("sprite", func() {
 		out, err := s.Gen()
 		assert.NoError(t(), err)
 		assert.Equal(t(), `
-	.foo { background: url(4p-LPc1p.png) no-repeat; }
-	.bar { background: url(4p-LPc1p.png) no-repeat -16px 0; }
+	.foo { background: url(l01cVKU8.png) no-repeat; }
+	.bar { background: url(l01cVKU8.png) no-repeat -16px 0; }
 		`, out)
-		ts.assertSprite("4p-LPc1p.png", 32, 16)
+		ts.assertSprite("l01cVKU8.png", 32, 16)
 	})
 
 	bdd.It("Group has one file", func() {
@@ -54,9 +54,9 @@ var _ = bdd.Describe("sprite", func() {
 		out, err := s.Gen()
 		assert.NoError(t(), err)
 		assert.Equal(t(), `
-	.foo { background: url(9OpRy4ao.png) no-repeat; }
+	.foo { background: url(cobz_bF6.png) no-repeat; }
 		`, out)
-		ts.assertSprite("9OpRy4ao.png", 16, 16)
+		ts.assertSprite("cobz_bF6.png", 16, 16)
 	})
 
 	bdd.It("Reference two identity file", func() {
@@ -73,12 +73,12 @@ var _ = bdd.Describe("sprite", func() {
 		out, err := s.Gen()
 		assert.NoError(t(), err)
 		assert.Equal(t(), `
-	.foo { background: url(4p-LPc1p.png) no-repeat; }
-	.bar { background: url(4p-LPc1p.png) no-repeat -16px 0; }
-	.foobar { background: url(4p-LPc1p.png) no-repeat; }
-	.foo-bar { background: url(4p-LPc1p.png) no-repeat -16px 0; }
+	.foo { background: url(l01cVKU8.png) no-repeat; }
+	.bar { background: url(l01cVKU8.png) no-repeat -16px 0; }
+	.foobar { background: url(l01cVKU8.png) no-repeat; }
+	.foo-bar { background: url(l01cVKU8.png) no-repeat -16px 0; }
 		`, out)
-		ts.assertSprite("4p-LPc1p.png", 32, 16)
+		ts.assertSprite("l01cVKU8.png", 32, 16)
 	})
 
 	bdd.It("Only Two identity file", func() {
@@ -93,10 +93,10 @@ var _ = bdd.Describe("sprite", func() {
 		out, err := s.Gen()
 		assert.NoError(t(), err)
 		assert.Equal(t(), `
-	.foo { background: url(9OpRy4ao.png) no-repeat; }
-	.foobar { background: url(9OpRy4ao.png) no-repeat; }
+	.foo { background: url(cobz_bF6.png) no-repeat; }
+	.foobar { background: url(cobz_bF6.png) no-repeat; }
 		`, out)
-		ts.assertSprite("9OpRy4ao.png", 16, 16)
+		ts.assertSprite("cobz_bF6.png", 16, 16)
 	})
 
 	bdd.XIt("background-image")
@@ -117,13 +117,13 @@ var _ = bdd.Describe("sprite", func() {
 		out, err := s.Gen()
 		assert.NoError(t(), err)
 		assert.Equal(t(), `
-	.foo { background: url(4p-LPc1p.png) no-repeat; }
-	.bar { background: url(4p-LPc1p.png) no-repeat -16px 0; }
-	.foobar { background: url(ti1X8itr.png) no-repeat; }
-	.foo-bar { background: url(ti1X8itr.png) no-repeat -16px 0; }
+	.foo { background: url(l01cVKU8.png) no-repeat; }
+	.bar { background: url(l01cVKU8.png) no-repeat -16px 0; }
+	.foobar { background: url(piouFODI.png) no-repeat; }
+	.foo-bar { background: url(piouFODI.png) no-repeat -16px 0; }
 		`, out)
-		ts.assertSprite("4p-LPc1p.png", 32, 16)
-		ts.assertSprite("ti1X8itr.png", 32, 16)
+		ts.assertSprite("l01cVKU8.png", 32, 16)
+		ts.assertSprite("piouFODI.png", 32, 16)
 	})
 
 	bdd.It("Ignore images", func() {
@@ -139,11 +139,11 @@ var _ = bdd.Describe("sprite", func() {
 		out, err := s.Gen()
 		assert.NoError(t(), err)
 		assert.Equal(t(), `
-	.foo { background: url(4p-LPc1p.png) no-repeat; }
-	.foobar { background: url(4p-LPc1p.png) no-repeat -16px 0; }
+	.foo { background: url(l01cVKU8.png) no-repeat; }
+	.foobar { background: url(l01cVKU8.png) no-repeat -16px 0; }
 	.bar { background: url(bar.png); }
 		`, out)
-		ts.assertSprite("4p-LPc1p.png", 32, 16)
+		ts.assertSprite("l01cVKU8.png", 32, 16)
 	})
 
 	bdd.It("Icons not the same size", func() {
@@ -158,10 +158,10 @@ var _ = bdd.Describe("sprite", func() {
 		out, err := s.Gen()
 		assert.NoError(t(), err)
 		assert.Equal(t(), `
-	.foo { background: url(R8qe6lpP.png) no-repeat; }
-	.foobar { background: url(R8qe6lpP.png) no-repeat -24px 0; }
+	.foo { background: url(TRw0KSHq.png) no-repeat; }
+	.foobar { background: url(TRw0KSHq.png) no-repeat -24px 0; }
 		`, out)
-		ts.assertSprite("R8qe6lpP.png", 40, 24)
+		ts.assertSprite("TRw0KSHq.png", 40, 24)
 	})
 
 	bdd.It("url('img')", func() {
@@ -176,10 +176,10 @@ var _ = bdd.Describe("sprite", func() {
 		out, err := s.Gen()
 		assert.NoError(t(), err)
 		assert.Equal(t(), `
-	.foo { background: url(4p-LPc1p.png) no-repeat; }
-	.bar { background: url(4p-LPc1p.png) no-repeat -16px 0; }
+	.foo { background: url(l01cVKU8.png) no-repeat; }
+	.bar { background: url(l01cVKU8.png) no-repeat -16px 0; }
 		`, out)
-		ts.assertSprite("4p-LPc1p.png", 32, 16)
+		ts.assertSprite("l01cVKU8.png", 32, 16)
 	})
 
 	bdd.It("url() not after background", func() {
